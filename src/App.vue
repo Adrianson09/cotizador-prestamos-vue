@@ -1,6 +1,7 @@
 <script setup>
-import {ref} from 'vue';
+import {ref, computed} from 'vue';
 import Header from './components/Header.vue';
+import Button from './components/Button.vue';
 
 const cantidad = ref(100000);
 
@@ -8,8 +9,25 @@ const MIN= 0
 const MAX= 200000
 const STEP= 5000
 
-function handleChange(e){
-  cantidad.value = +e.target.value;
+const formatearDinero = computed(() => {
+  const formatter = new Intl.NumberFormat('es-CR',{
+    style: 'currency',
+    currency: 'CRC'
+  });
+  return formatter.format(cantidad.value)
+});
+
+const handleChangeDecremento = () => {
+  if (cantidad.value > MIN) {
+    cantidad.value = cantidad.value - STEP;
+  }
+  
+}
+const handleChangeIncremento = () => {
+  if (cantidad.value < MAX) {
+    cantidad.value = cantidad.value + STEP;
+  }
+  
 }
 
 </script>
@@ -17,6 +35,19 @@ function handleChange(e){
 <template>
   <div class="my-20 max-w-lg mx-auto bg-white shadow p-10">
       <Header/>
+
+      <div class="flex justify-between mt-10">
+        <Button
+        :operador="'-'"
+        @fn="handleChangeDecremento"
+        />
+        <Button
+        :operador="'+'"
+        @fn="handleChangeIncremento"
+        />
+       
+
+      </div>
       <div class="my-5">
         <input 
         type="range"
@@ -24,11 +55,10 @@ function handleChange(e){
         :min="MIN"
         :max="MAX"
         :step="STEP"
-        :value="cantidad"
-        @input="handleChange"
+        v-model.number="cantidad"
        
         />
-        {{ cantidad }}
+        <p class="text-center my-10 text-5xl font-extrabold text-green-800">{{ formatearDinero }}</p>
       </div>
   </div>
  
