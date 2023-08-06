@@ -22,6 +22,7 @@ let total;
     }else {
         total *= 1.3
     }
+    return total
 }
 
 export {
